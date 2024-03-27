@@ -56,7 +56,7 @@ python3 /MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
 
 # Licensing
 
-- The ILPONet package is MIT License.
+- The ILPONet package is [MIT License](LICENSE).
 - The MedMNIST adaptations are based on code licensed under the Apache License 2.0.
 - The se3cnn adaptations are based on code licensed under the MIT License.
 
