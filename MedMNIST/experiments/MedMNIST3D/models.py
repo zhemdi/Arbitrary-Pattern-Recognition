@@ -7,10 +7,10 @@ import torch.nn.functional as F
 
 
 import sys
-sys.path.append('../../../')
+# sys.path.append('../../')
 
 
-from ILPONet import InvLocalPatOrientConvolution as ILPO 
+from ILPONet.source import InvLocalPatOrientConvolution as ILPO 
 
 
 

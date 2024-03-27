@@ -4,13 +4,13 @@ import torch.nn.functional as F
 
 import os
 import sys
-current_directory = os.path.dirname(os.path.abspath(__file__))
-root_directory = os.path.join(current_directory, '..', '..', '..')
-sys.path.append(root_directory)
-print(root_directory)
+# current_directory = os.path.dirname(os.path.abspath(__file__))
+# root_directory = os.path.join(current_directory, '..', '..', '..')
+# sys.path.append(root_directory)
+# print(root_directory)
 
 
-from ILPONet.ILPONet import InvLocalPatOrientConvolution as ILPO
+from ILPONet.source import InvLocalPatOrientConvolution as ILPO 
 
 from se3cnn.blocks import GatedBlock
 from se3cnn.blocks import NormBlock
@@ -173,7 +173,7 @@ class ILPOResBlock(nn.Module):
         for module in self.modules():
             if isinstance(module, nn.Conv3d) :
                 nn.init.xavier_normal_(module.weight.data)
-            elif isinstance(module, ILPO.InvLocalPatternOrientConvolution):
+            elif isinstance(module, ILPO):
                 nn.init.xavier_normal_(module.weight.data)
                 nn.init.xavier_normal_(module.zeroweight.data)
                 # nn.init.xavier_normal_(module.kernel_in_3d_coefs_weight.data)

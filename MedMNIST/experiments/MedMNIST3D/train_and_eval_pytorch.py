@@ -99,7 +99,6 @@ def main(data_flag, output_root, num_epochs, gpu_ids, batch_size, order, so3_siz
     #     else:
     #         model = model_to_syncbn(Conv3dConverter(model, i3d_repeat_axis=None))
     
-    
     model = model.to(device)
 
     train_evaluator = medmnist.Evaluator(data_flag, 'train')

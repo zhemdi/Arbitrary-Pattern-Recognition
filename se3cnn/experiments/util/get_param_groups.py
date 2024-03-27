@@ -2,7 +2,7 @@ import torch.nn as nn
 
 from se3cnn.blocks import GatedBlock
 from se3cnn.blocks import NormBlock
-from se3cnn.blocks import ILPO_net
+# from se3cnn.blocks import ILPO_net
 from se3cnn import SE3BatchNorm
 from se3cnn import SE3GroupNorm
 from se3cnn import SE3Convolution
@@ -14,6 +14,8 @@ from se3cnn.non_linearities import NormRelu
 from se3cnn.non_linearities import NormSoftplus
 from se3cnn.non_linearities import ScalarActivation
 from se3cnn.non_linearities import GatedActivation
+
+from ILPONet.source import InvLocalPatOrientConvolution as ILPO 
 
 
 # from ILPONet.ILPONet import InvLocalPatOrientConvolution as ILPO 
@@ -44,7 +46,7 @@ def get_param_groups(model, args):
                   if isinstance(m, (SE3Convolution,
                                     SE3BNConvolution, # TO BE INCLUDED SINCE CONVOLUTION DOES NOT USE SE3CONVOLUTION BUT DIRECTLY nn.functional.conv3d AND IS HENCE NOT COVERED
                                     SE3GNConvolution, # NOT TO BE INCLUDED SINCE SE3CONVOLUTION IS USED
-                                    ILPO_net.InvLocalPatternOrientConvolution,
+                                    ILPO,
                                     nn.Conv1d, nn.Conv2d, nn.Conv3d, nn.ConvTranspose1d,
                                     nn.ConvTranspose2d, nn.ConvTranspose3d))]
     normActivs = [m for m in model.modules() if isinstance(m, (NormSoftplus, NormRelu, ScalarActivation))]
