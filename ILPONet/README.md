@@ -1,9 +1,10 @@
-![Alt text](illustration/ILPO-scheme.png)
-
+<div align="center">
+  ![alt text](illustration/ILPO-scheme.png)
+</div>
 
 # ILPO-Net: Invariant to Local Patterns Orientation Network
 
-$$Authors:$$ Dmitrii Zhemchuzhnikov and Sergei Grudinin
+**Authors:** Dmitrii Zhemchuzhnikov and Sergei Grudinin
 
 ## Abstract
 
@@ -60,9 +61,7 @@ If you use ILPO-Net in your research, please cite the following paper:
 @article{ilpo2024zhemchuzhnikov,
   title={ILPO-Net: Invariant to Local Patterns Orientation Network},
   author={Dmitrii Zhemchuzhnikov and Sergei Grudinin},
-  journal={Your Journal},
   year={2024},
-  ...
 }
 ```
 
