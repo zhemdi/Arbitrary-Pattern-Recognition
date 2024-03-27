@@ -1,93 +1,62 @@
-# ILPONet
+# ILPONet Repository
 
+This repository contains the implementation of ILPONet (Invariant to Local Patterns Orientation Network), a novel convolutional neural network architecture that achieves rotational invariance for volumetric data analysis. The key components of this repository are:
 
+## Repository Structure
 
-## Getting started
+- **ILPONet/**: Contains the ILPONet package, including the implementation of the ILPONet convolution operator and related utilities.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- **MedMNIST/**: This directory contains adaptations of ResNet-18 and ResNet-50 architectures that utilize the ILPONet convolution operator. The adaptations are designed to work with the MedMNIST dataset, a comprehensive resource for benchmarking machine learning models on medical image datasets. The MedMNIST codebase is sourced from [MedMNIST GitHub Repository](https://github.com/MedMNIST/MedMNIST) and is licensed under the Apache License 2.0.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gricad-gitlab.univ-grenoble-alpes.fr/GruLab/ILPONet.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gricad-gitlab.univ-grenoble-alpes.fr/GruLab/ILPONet/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+- **se3cnn/**: Incorporates adaptations of ResNet-50 architectures leveraging the ILPONet convolution operator, tailored for compatibility with se3cnn, a library for 3D rotation equivariant CNNs. The se3cnn code utilized here is based on a specific commit from the [se3cnn GitHub Repository](https://github.com/mariogeiger/se3cnn/tree/546bc682887e1cb5e16b484c158c05f03377e4e9), which is under the MIT License.
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### Example Training Commands
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+For se3cnn:
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+```bash
+python3 /se3cnn/experiments/scripts/cath/cath.py \
+  --data-filename /se3cnn/data/cath_10arch_ca.npz \
+  --model ILPOResNet34Smallhardmax \
+  --training-epochs 100 \
+  --batch-size 4 \
+  --batchsize-multiplier 1 \
+  --randomize-orientation \
+  --kernel-size 3 \
+  --initial_lr=0.0005 \
+  --lr_decay_start=40 \
+  --burnin-epochs 40 \
+  --lr_decay_base=.94 \
+  --downsample-by-pooling \
+  --p-drop-conv 0.01 \
+  --report-frequency 1 \
+  --lamb_conv_weight_L1 1e-7 \
+  --lamb_conv_weight_L2 1e-7 \
+  --lamb_bn_weight_L1 1e-7 \
+  --lamb_bn_weight_L2 1e-7 \
+  --report-on-test-set
+```
+For MedMNIST:
+```bash
+python3 /MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
+  --data_flag adrenalmnist3d \
+  --conv Conv3d \
+  --model_flag ilporesnet18 \
+  --download \
+  --output_root /MedMNIST/experiments/MedMNIST3D/output/ \
+  --so3_size 4 \
+  --pooling_type softmax \
+  --dropout 0.01 \
+  --learning_rate 0.005 \
+  --batch_size 16 \
+  --gpu_ids -1
+```
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+# Licensing
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+- The ILPONet package is MIT License.
+- The MedMNIST adaptations are based on code licensed under the Apache License 2.0.
+- The se3cnn adaptations are based on code licensed under the MIT License.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
