@@ -6,6 +6,10 @@
 
 **Authors:** Dmitrii Zhemchuzhnikov and Sergei Grudinin
 
+**Affiliation:** Univ. Grenoble Alpes, CNRS, Grenoble INP, LJK, 38000 Grenoble, France
+
+A preprint of the paper is available on [arXiv](https://arxiv.org/abs/2403.19612).
+
 ## Abstract
 
 Effective recognition of spatial patterns and learning their hierarchy is crucial in modern spatial data analysis. Volumetric data applications seek techniques ensuring invariance not only to shifts but also to pattern rotations. While traditional methods can readily achieve translational invariance, rotational invariance possesses multiple challenges and remains an active area of research. Here, we present ILPO-Net (Invariant to Local Patterns Orientation Network), a novel approach that handles arbitrarily shaped patterns with the convolutional operation inherently invariant to local spatial pattern orientations using the Wigner matrix expansions. Our architecture seamlessly integrates the new convolution operator and, when benchmarked on diverse volumetric datasets such as MedMNIST and CATH, demonstrates superior performance over the baselines with significantly reduced parameter counts – up to 1000 times fewer in the case of MedMNIST. Beyond these demonstrations, ILPO-Net’s rotational invariance paves the way for other applications across multiple disciplines. 
@@ -58,10 +62,13 @@ ILPONet/
 If you use ILPO-Net in your research, please cite the following paper:
 
 ```bibtex
-@article{ilpo2024zhemchuzhnikov,
-  title={ILPO-Net: Invariant to Local Patterns Orientation Network},
-  author={Dmitrii Zhemchuzhnikov and Sergei Grudinin},
-  year={2024},
+@misc{zhemchuzhnikov2024ilponet,
+      title={{ILPO-NET}: Network for the invariant recognition of arbitrary volumetric patterns in 3D}, 
+      author={Dmitrii Zhemchuzhnikov and Sergei Grudinin},
+      year={2024},
+      eprint={2403.19612},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
 

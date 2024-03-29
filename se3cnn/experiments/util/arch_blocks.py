@@ -10,7 +10,7 @@ import sys
 # print(root_directory)
 
 
-from ILPONet.source import InvLocalPatOrientConvolution as ILPO 
+from ILPONet import InvLocalPatOrientConvolution as ILPO 
 
 from se3cnn.blocks import GatedBlock
 from se3cnn.blocks import NormBlock

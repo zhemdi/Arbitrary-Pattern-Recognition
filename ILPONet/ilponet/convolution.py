@@ -4,9 +4,9 @@ import torch.nn.functional as F
 import numpy as np
 
 # Import necessary functions and classes from other files
-from wigner_functions import wigner_d_matrix_real
-from basis_functions import get_so3basisgrid, get_so3basisgrid0, spherical_harmonics
-from wigmat_reconstruction import WigmatReconstruction
+from .wigner_functions import wigner_d_matrix_real
+from .basis_functions import get_so3basisgrid, get_so3basisgrid0, spherical_harmonics
+from .wigmat_reconstruction import WigmatReconstruction
 
 
 EPS = 1e-16

@@ -13,13 +13,13 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 from acsconv.converters import ACSConverter, Conv2_5dConverter, Conv3dConverter
 from medmnist import INFO, Evaluator
-from models import ResNet18, ResNet50, ILPOResNet18, ILPOResNet50, ILPOResNet18Small, ILPOResNet50Small
+from models import ResNet18, ResNet50, ILPOResNet18, ILPOResNet50, ILPOResNet18Small, ILPOResNet50Small, ELPOResNet18, ELPOResNet18Nano, ELPOResNet18Micro
 from tensorboardX import SummaryWriter
 from tqdm import trange
 from utils import Transform3D, model_to_syncbn
 
 
-def main(data_flag, output_root, num_epochs, gpu_ids, batch_size, order, so3_size, dropout, downsample_by_pooling, lr, pooling_type, conv, pretrained_3d, download, model_flag, as_rgb, shape_transform, model_path, run):
+def main(data_flag, output_root, num_epochs, gpu_ids, batch_size, order, so3_size, dropout, downsample_by_pooling, lr, pooling_type, global_activation, coefficients_type, conv, pretrained_3d, download, model_flag, as_rgb, shape_transform, model_path, run):
 
     # lr = 0.001
     gamma=0.1
@@ -82,6 +82,12 @@ def main(data_flag, output_root, num_epochs, gpu_ids, batch_size, order, so3_siz
         model = ILPOResNet18(in_channels=n_channels, num_classes=n_classes, order=order, so3_size=so3_size, dropout=dropout, downsample_by_pooling=downsample_by_pooling)
     elif model_flag == 'ilporesnet18small':
         model = ILPOResNet18Small(in_channels=n_channels, num_classes=n_classes, order=order, so3_size=so3_size, dropout=dropout, downsample_by_pooling=downsample_by_pooling)
+    elif model_flag == 'elporesnet18':
+        model = ELPOResNet18(in_channels=n_channels, num_classes=n_classes, order=order, dropout=dropout, downsample_by_pooling=downsample_by_pooling, global_activation = global_activation, coefficients_type=coefficients_type)
+    elif model_flag == 'elporesnet18nano':
+        model = ELPOResNet18Nano(in_channels=n_channels, num_classes=n_classes, order=order, dropout=dropout, downsample_by_pooling=downsample_by_pooling, global_activation = global_activation, coefficients_type=coefficients_type)
+    elif model_flag == 'elporesnet18micro':
+        model = ELPOResNet18Micro(in_channels=n_channels, num_classes=n_classes, order=order, dropout=dropout, downsample_by_pooling=downsample_by_pooling, global_activation = global_activation, coefficients_type=coefficients_type)
     elif model_flag == 'ilporesnet50':
         model = ILPOResNet50(in_channels=n_channels, num_classes=n_classes, order=order, so3_size=so3_size, dropout=dropout, downsample_by_pooling=downsample_by_pooling)
     elif model_flag == 'ilporesnet50small':
@@ -277,6 +283,12 @@ if __name__ == '__main__':
                         default=0.0,
                         help='dropout_rate',
                         type=float)
+    parser.add_argument('--global_activation',
+                        action="store_true")
+    parser.add_argument('--coefficients_type',
+                        default='adaptive',
+                        help='choose coefficients type, trainable/adaptive/constant',
+                        type=str)
     parser.add_argument('--downsample_by_pooling',
                         action="store_true")
     parser.add_argument('--learning_rate',
@@ -334,6 +346,8 @@ if __name__ == '__main__':
     downsample_by_pooling = args.downsample_by_pooling
     learning_rate = args.learning_rate
     pooling_type = args.pooling_type
+    global_activation = args.global_activation
+    coefficients_type = args.coefficients_type
     conv = args.conv
     pretrained_3d = args.pretrained_3d
     download = args.download
@@ -343,4 +357,4 @@ if __name__ == '__main__':
     shape_transform = args.shape_transform
     run = args.run
 
-    main(data_flag, output_root, num_epochs, gpu_ids, batch_size, order, so3_size, dropout, downsample_by_pooling, learning_rate, pooling_type, conv, pretrained_3d, download, model_flag, as_rgb, shape_transform, model_path, run)
+    main(data_flag, output_root, num_epochs, gpu_ids, batch_size, order, so3_size, dropout, downsample_by_pooling, learning_rate, pooling_type,  global_activation, coefficients_type, conv, pretrained_3d, download, model_flag, as_rgb, shape_transform, model_path, run)

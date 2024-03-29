@@ -15,7 +15,7 @@ from se3cnn.non_linearities import NormSoftplus
 from se3cnn.non_linearities import ScalarActivation
 from se3cnn.non_linearities import GatedActivation
 
-from ILPONet.source import InvLocalPatOrientConvolution as ILPO 
+from ILPONet import InvLocalPatOrientConvolution as ILPO 
 
 
 # from ILPONet.ILPONet import InvLocalPatOrientConvolution as ILPO 

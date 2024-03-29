@@ -2,7 +2,7 @@ import torch
 import numpy as np
 
 # Import necessary functions from wigner_functions.py
-from wigner_functions import wigner_d_matrix_real0, wigner_d_matrix_real
+from .wigner_functions import wigner_d_matrix_real0, wigner_d_matrix_real
 
 
 

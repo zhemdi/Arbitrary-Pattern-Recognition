@@ -1,1 +1,1 @@
-from .convolution_module import InvLocalPatOrientConvolution
+from .convolution import InvLocalPatOrientConvolution
