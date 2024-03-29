@@ -48,10 +48,11 @@ ILPONet/
    git clone https://gricad-gitlab.univ-grenoble-alpes.fr/GruLab/ILPONet.git
    ```
 
-2. Install the required dependencies:
+2. Install the package:
 
    ```bash
-   pip install -r requirements.txt
+   cd ILPONet
+   pip install .
    ```
 
 
