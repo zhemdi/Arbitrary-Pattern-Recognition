@@ -1,10 +1,12 @@
-# ILPONet Repository
+# ILPO Repository
 
-This repository contains the implementation of ILPONet (Invariant to Local Patterns Orientation Network), a novel convolutional neural network architecture that achieves rotational invariance for volumetric data analysis. The key components of this repository are:
+This repository contains mplementations of ILPONet (Invariant to Local Patterns Orientation Network) and EquiLoPO (Equivariant to Local Patterns Orientation Network) , convolutional neural network architectures that achieve rotational invariance and equivariance for volumetric data analysis respectively. The key components of this repository are:
 
 ## Repository Structure
 
 - **ILPONet/**: Contains the ILPONet package, including the implementation of the ILPONet convolution operator and related utilities.
+
+- **EquiLoPO/**: Contains the EquiLoPO package, including the implementation of the EquiLoPONet convolution operator and related utilities.
 
 - **MedMNIST/**: This directory contains adaptations of ResNet-18 and ResNet-50 architectures that utilize the ILPONet convolution operator. The adaptations are designed to work with the MedMNIST dataset, a comprehensive resource for benchmarking machine learning models on medical image datasets. The MedMNIST codebase is sourced from [MedMNIST GitHub Repository](https://github.com/MedMNIST/MedMNIST) and is licensed under the Apache License 2.0.
 
@@ -13,6 +15,8 @@ This repository contains the implementation of ILPONet (Invariant to Local Patte
 ## Usage
 
 ### Example Training Commands
+
+Below are example commands for training ILPONet on the CATH and MedMNIST datasets:
 
 For se3cnn:
 
@@ -51,12 +55,28 @@ python3 /MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
   --dropout 0.01 \
   --learning_rate 0.005 \
   --batch_size 16 \
-  --gpu_ids -1
+```
+
+An example of training EquiLoPO-Net on the MedMNIST dataset:
+    
+```bash 
+    python3 /MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
+    --data_flag adrenalmnist3d  \
+    --conv Conv3d \
+    --model_flag elporesnet18nano \
+    --download \
+    --output_root  /MedMNIST/experiments/MedMNIST3D/output/ \
+    --pooling_type softmax \
+    --dropout 0.01 \
+    --learning_rate 0.005 \
+    --batch_size 1 \
+    --order 2
 ```
 
 # Licensing
 
 - The ILPONet package is [MIT License](LICENSE).
+- The EquiLoPO package is [MIT License](LICENSE).
 - The MedMNIST adaptations are based on code licensed under the Apache License 2.0.
 - The se3cnn adaptations are based on code licensed under the MIT License.
 
