@@ -2,7 +2,7 @@
   ![alt text](illustration/Figure.png)
 </div>
 
-# EquiLoPO: Invariant to Local Patterns Orientation Network
+# EquiLoPO: Equivariant to Local Patterns Orientation Network
 
 Method presented at Paper Title: "On the Fourier analysis in the SO(3) space : EquiLoPO Network"
 
@@ -10,6 +10,7 @@ Method presented at Paper Title: "On the Fourier analysis in the SO(3) space : E
 
 **Affiliation:** Univ. Grenoble Alpes, CNRS, Grenoble INP, LJK, 38000 Grenoble, France
 
+A preprint of the paper is available on [arXiv](https://arxiv.org/abs/2404.15979).
 
 
 ## Abstract
@@ -80,7 +81,7 @@ If you use ILPO-Net in your research, please cite the following paper:
       title={On the Fourier analysis in the {SO(3)} space : {EquiLoPO} Network}, 
       author={Dmitrii Zhemchuzhnikov and Sergei Grudinin},
       year={2024},
-      eprint={},
+      eprint={2404.15979},
       archivePrefix={arXiv},
       primaryClass={cs.CV}
 }
