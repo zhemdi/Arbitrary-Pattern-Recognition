@@ -18,7 +18,7 @@ This repository contains mplementations of ILPONet (Invariant to Local Patterns 
 
 Below are example commands for training ILPONet on the CATH and MedMNIST datasets:
 
-For se3cnn:
+#### For se3cnn:
 
 ```bash
 python3 /se3cnn/experiments/scripts/cath/cath.py \
@@ -42,7 +42,7 @@ python3 /se3cnn/experiments/scripts/cath/cath.py \
   --lamb_bn_weight_L2 1e-7 \
   --report-on-test-set
 ```
-For MedMNIST:
+### For MedMNIST:
 ```bash
 python3 /MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
   --data_flag adrenalmnist3d \
@@ -59,19 +59,59 @@ python3 /MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
 
 An example of training EquiLoPO-Net on the MedMNIST dataset:
     
-```bash 
-    python3 /MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
-    --data_flag adrenalmnist3d  \
+#### Local Trainable Activation
+```bash
+python3 ./MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
+    --data_flag adrenalmnist3d \
     --conv Conv3d \
-    --model_flag elporesnet18nano \
+    --model_flag elporesnet18 \
     --download \
-    --output_root  /MedMNIST/experiments/MedMNIST3D/output/ \
-    --pooling_type softmax \
+    --output_root ./MedMNIST/experiments/MedMNIST3D/output/ \
     --dropout 0.01 \
     --learning_rate 0.005 \
-    --batch_size 1 \
-    --order 2
+    --batch_size 16 \
+    --order 2 \
+    --downsample_by_pooling \
+    --coefficients_type trainable \
 ```
+
+#### Local Adaptive Activation
+
+```bash
+python3 ./MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
+    --data_flag adrenalmnist3d \
+    --conv Conv3d \
+    --model_flag elporesnet18 \
+    --download \
+    --output_root ./MedMNIST/experiments/MedMNIST3D/output/ \
+    --dropout 0.01 \
+    --learning_rate 0.005 \
+    --batch_size 16 \
+    --order 2 \
+    --downsample_by_pooling \
+    --coefficients_type adaptive \
+    --gpu_ids -1 \
+```
+
+#### Global Trainable Activation
+
+```bash
+python3 ./MedMNIST/experiments/MedMNIST3D/train_and_eval_pytorch.py \
+    --data_flag adrenalmnist3d \
+    --conv Conv3d \
+    --model_flag elporesnet18 \
+    --download \
+    --output_root ./MedMNIST/experiments/MedMNIST3D/output/ \
+    --dropout 0.01 \
+    --learning_rate 0.005 \
+    --batch_size 16 \
+    --order 2 \
+    --downsample_by_pooling \
+    --coefficients_type trainable \
+    --gpu_ids -1 \
+    --global_activation \
+```
+
 
 # Licensing
 

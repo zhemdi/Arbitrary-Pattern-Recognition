@@ -137,6 +137,15 @@ class EquiLocalPatOrientConvolution(nn.Module):
 
     
     def forward(self, input):
+        """
+        Forward pass of the module.
+
+        Parameters:
+        input (torch.Tensor): Input tensor.
+
+        Returns:
+        torch.Tensor: Output tensor after applying the convolution and bias.
+        """
         filters = self._compute_filters()
         output = self._se3_convolution(input, filters)
         if self.bias is not None:

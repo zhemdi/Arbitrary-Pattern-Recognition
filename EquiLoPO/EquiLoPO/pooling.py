@@ -37,7 +37,27 @@ class AvgPoolSE3(nn.Module):
 
 
 class SO3Softmax(nn.Module):
+    """
+    SO3Softmax module for applying a softmax-like activation on SO(3) group elements.
+
+    Args:
+        order (int): Order of the spherical harmonics.
+        distr_dependency (bool): Whether to use distribution dependency. Default is False.
+        num_feat (int): Number of feature channels. Default is 4.
+        global_activation (bool): Whether to use global activation. Default is False.
+        coefficients_type (str): Type of coefficients ('trainable' or other). Default is 'trainable'.
+    """
     def __init__(self, order, distr_dependency=False, num_feat=4, global_activation=False, coefficients_type='trainable'):
+        """
+        Initialize the SO3Softmax module.
+
+        Parameters:
+        order (int): Order of the spherical harmonics.
+        distr_dependency (bool): Whether to use distribution dependency.
+        num_feat (int): Number of feature channels.
+        global_activation (bool): Whether to use global activation.
+        coefficients_type (str): Type of coefficients ('trainable' or other).
+        """
         super(SO3Softmax, self).__init__()
         self.coefficients_type = coefficients_type
         self.so3_trainable_activation = SO3LocalActivation(order, distr_dependency, num_feat, coefficients_type =  coefficients_type)
@@ -46,6 +66,15 @@ class SO3Softmax(nn.Module):
         self.global_activation = global_activation
 
     def forward(self, input):
+        """
+        Forward pass of the SO3Softmax module.
+
+        Parameters:
+        input (torch.Tensor): Input tensor.
+
+        Returns:
+        torch.Tensor: Output tensor after applying the SO3 softmax activation.
+        """
         output = self.so3_trainable_activation(input)
         degree_mult = torch.cat([torch.ones([(2 * l + 1) ** 2], device=input.device) * (2 * l + 1) for l in range(self.order_out)], dim=0)
         so3_softmax_output = torch.sum(output ** 2 / degree_mult[None, None, :, None, None, None], dim=2)

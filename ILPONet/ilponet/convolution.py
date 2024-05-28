@@ -8,13 +8,34 @@ from .wigner_functions import wigner_d_matrix_real
 from .basis_functions import get_so3basisgrid, get_so3basisgrid0, spherical_harmonics
 from .wigmat_reconstruction import WigmatReconstruction
 
-
+# Placeholder for the EPS constant which is used for numerical stability in division operations
 EPS = 1e-16
 
 class InvLocalPatOrientConvolution(nn.Module):
+    """
+    Invariant to local pattern orientation convolution module.
+    """
     def __init__(self, num_inputs, num_outputs, kernel_size, order=1, so3_size=1, stride=1, padding=0,
                  dilation_rate=1, bias=True, pooling_type='softmax',
                  device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'), beta_division='regular'):
+        """
+        Initializes the InvLocalPatOrientConvolution module.
+
+        Parameters:
+        num_inputs (int): Number of input channels.
+        num_outputs (int): Number of output channels.
+        kernel_size (int): Size of the convolution kernel.
+        order (int): The order of the spherical harmonics.
+        so3_size (int): The size of the SO(3) grid.
+        stride (int): Stride of the convolution.
+        padding (int): Zero-padding added to both sides of the input.
+        dilation_rate (int): Spacing between kernel elements.
+        bias (bool): If True, adds a learnable bias to the output.
+        pooling_type (str): Type of pooling ('softmax' or 'hardmax').
+        device (torch.device): Device to run the model on.
+        beta_division (str): Method to divide the beta angle ('regular' or 'gauss').
+        """
+        
         super(InvLocalPatOrientConvolution, self).__init__()
 
         self.num_inputs = num_inputs
@@ -35,7 +56,14 @@ class InvLocalPatOrientConvolution(nn.Module):
         self._initialize_parameters(so3_size, beta_division, bias)
         
     def _initialize_parameters(self, so3_size, beta_division, bias):
-        """Helper method to initialize weights and other parameters."""
+        """
+        Helper method to initialize weights and other parameters.
+
+        Parameters:
+        so3_size (int): The size of the SO(3) grid.
+        beta_division (str): Method to divide the beta angle ('regular' or 'gauss').
+        bias (bool): If True, adds a learnable bias to the output.
+        """
         t = (self.kernel_size - 1) // 2 + 1
         k_max = ((t - 1) ** 2) * 3
 
@@ -71,7 +99,12 @@ class InvLocalPatOrientConvolution(nn.Module):
         self.wigmat_reconstruction = WigmatReconstruction.apply
 
     def _compute_wigner_indices(self):
-        """Helper method to compute Wigner indices."""
+        """
+        Helper method to compute Wigner indices.
+
+        Returns:
+        np.ndarray: Array of Wigner indices.
+        """
         wigner_indices = []
         for l in range(self.order):
             wigner_indices.extend(
@@ -80,7 +113,12 @@ class InvLocalPatOrientConvolution(nn.Module):
         return np.array(wigner_indices)
 
     def _compute_spherical_coords_and_masks(self):
-        """Helper method to compute spherical coordinates and masks."""
+        """
+        Helper method to compute spherical coordinates and masks.
+
+        Returns:
+        tuple: Tensors of spherical coordinates and masks.
+        """
         kernel_center = (self.kernel_size - 1) // 2
         spherical_coords = np.zeros((self.kernel_size, self.kernel_size, self.kernel_size, 3), dtype=np.float32)
         rad_list = []
@@ -119,7 +157,15 @@ class InvLocalPatOrientConvolution(nn.Module):
         return torch.tensor(spherical_coords, dtype = torch.float32, device = self.device), torch.tensor(np.stack(masks[::-1], axis = 0), dtype = torch.float32, device = self.device)
 
     def forward(self, input):
-        """Forward pass for the convolution."""
+        """
+        Forward pass for the convolution.
+
+        Parameters:
+        input (torch.Tensor): The input tensor.
+
+        Returns:
+        torch.Tensor: The output tensor after applying the convolution and pooling.
+        """
         self.wm_ind = torch.tensor(self.wigner_indices[:, 3], device=self.weight.device)
         zeroweight_ext = torch.cat([self.zeroweight[None, None], torch.zeros(self.order**2 - 1, 1, self.num_inputs,
                                                                         self.num_outputs, device=self.weight.device)],
@@ -129,6 +175,8 @@ class InvLocalPatOrientConvolution(nn.Module):
         kernel_in_3d = kernel_in_3d.reshape(-1, self.num_inputs, self.kernel_size, self.kernel_size, self.kernel_size)
         conv = F.conv3d(input, kernel_in_3d, stride=self.stride, padding=self.padding)
         conv_reshaped = conv.reshape(-1, len(self.wigner_indices), self.num_outputs, *conv.shape[2:])
+        
+        # Apply SO(3) distribution reconstruction
         # so3_distr = WigmatReconstruction.apply([conv_reshaped, self.d1, self.d2, self.cossin_alpha1, self.cossin_gamma1,
         #                                         self.cossin_alpha2, self.cossin_gamma2, self.wm_ind, self.order])
         so3_distr = torch.einsum('bsdxyz, mlns->mlnbdxyz',conv_reshaped, self.so3basisgrid)
@@ -139,6 +187,8 @@ class InvLocalPatOrientConvolution(nn.Module):
             output = (so3_distr*w*self.w_i[None,:,None,None,None,None,None,None]).sum(0).sum(0).sum(0)
         else:
             output = torch.max(so3_distr.reshape(*([-1]+list(so3_distr.shape[3:]))), 0)[0]
+        
+        
         if self.bias is not None:
             output += self.bias.view(1,-1,1,1,1)
         return output

@@ -10,7 +10,18 @@ NORM_FACTOR = 3.0
 
 
 class CoefficientsNetwork(nn.Module):
+    """
+    A neural network to generate coefficients for the activation function.
+    """
     def __init__(self, order=3, num_features=4, hidden_size=4):
+        """
+        Initialize the CoefficientsNetwork.
+
+        Parameters:
+        order (int): The order of the tensor.
+        num_features (int): Number of feature channels.
+        hidden_size (int): Size of the hidden layer.
+        """
         super(CoefficientsNetwork, self).__init__()
         self.weights1 = nn.Parameter(torch.randn(num_features, order, hidden_size))
         self.bias1 = nn.Parameter(torch.randn(num_features, hidden_size))
@@ -20,6 +31,15 @@ class CoefficientsNetwork(nn.Module):
         self.bias3 = nn.Parameter(torch.randn(num_features, 3))
 
     def forward(self, x):
+        """
+        Forward pass of the network.
+
+        Parameters:
+        x (torch.Tensor): Input tensor.
+
+        Returns:
+        torch.Tensor: Output tensor after applying the network.
+        """
         x = torch.einsum('bdxyzk, dkl -> bdxyzl', x, self.weights1) + self.bias1[None, :, None, None, None]
         x = torch.relu(x)
         x = torch.einsum('bdxyzk, dkl -> bdxyzl', x, self.weights2) + self.bias2[None, :, None, None, None]
@@ -29,8 +49,21 @@ class CoefficientsNetwork(nn.Module):
 
 
 class TrainableActivation(torch.autograd.Function):
+    """
+    Custom autograd function for a trainable activation.
+    """
     @staticmethod
     def forward(ctx, *args):
+        """
+        Forward pass of the trainable activation.
+
+        Parameters:
+        ctx (torch.autograd.Function): Context object to save information for backward pass.
+        args: Arguments including the coefficients and order.
+
+        Returns:
+        torch.Tensor: Resulting polynomial after applying the activation.
+        """
         coefficients, order = args[-2], args[-1]
         order2 = 2 * order - 1
         l3 = order * (4 * order ** 2 - 1) // 3
@@ -48,6 +81,16 @@ class TrainableActivation(torch.autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
+        """
+        Backward pass of the trainable activation.
+
+        Parameters:
+        ctx (torch.autograd.Function): Context object with saved information from the forward pass.
+        grad_output (torch.Tensor): Gradient of the loss with respect to the output.
+
+        Returns:
+        tuple: Gradients of the loss with respect to the input arguments.
+        """
         saved_tensors = ctx.saved_tensors
         order = ctx.order
         order2 = 2 * order - 1
@@ -69,7 +112,19 @@ class TrainableActivation(torch.autograd.Function):
 
 
 class SO3LocalActivation(nn.Module):
+    """
+    A module for local activation on SO(3) group elements.
+    """
     def __init__(self, order, distr_dependency=False, num_feat=4, coefficients_type = 'trainable'):
+        """
+        Initialize the SO3LocalActivation module.
+
+        Parameters:
+        order (int): The order of the tensor.
+        distr_dependency (bool): Whether to use distribution dependency.
+        num_feat (int): Number of feature channels.
+        coefficients_type (str): Type of coefficients ('trainable' or 'adaptive').
+        """
         super(SO3LocalActivation, self).__init__()
         self.order = order
         self.distr_dependency = distr_dependency
@@ -85,6 +140,15 @@ class SO3LocalActivation(nn.Module):
         self.coefficients_bias = torch.tensor([3 / 32, 0.5, 15 / 32])
 
     def forward(self, input):
+        """
+        Forward pass of the SO3LocalActivation module.
+
+        Parameters:
+        input (torch.Tensor): Input tensor.
+
+        Returns:
+        torch.Tensor: Output tensor after applying the activation.
+        """
         with torch.no_grad():
             degree_mult = torch.cat([torch.ones([(2 * l + 1) ** 2], device=input.device) * (2 * l + 1) for l in range(self.order)], dim=0)
             norm = torch.sum(8 * np.pi ** 2 * input ** 2 / degree_mult[None, None, :, None, None, None], dim=2, keepdim=True)

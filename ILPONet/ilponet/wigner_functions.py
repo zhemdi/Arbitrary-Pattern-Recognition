@@ -2,15 +2,36 @@ import numpy as np
 
 # get_small_d_wigner_for_real, wigner_d_matrix_real0, and wigner_d_matrix_real 
 
+
+# Function to generate small Wigner D matrices
 def get_small_d_wigner_for_real(beta, L_max):
     """
-    Generate small Wigner D matrices.
+    Generate small Wigner D matrices for given beta and L_max.
+
+    Parameters:
+    beta (numpy.ndarray): Array of beta angles.
+    L_max (int): Maximum degree of the Wigner D matrices.
+
+    Returns:
+    numpy.ndarray: Array of small Wigner D matrices.
     """
     def index_offset(j):
+        # Helper function to calculate the index offset for a given j
         return j*(4*j**2-1)//3
+    
     def index_offset2(j, m, mp):
+        # Helper function to calculate the specific index offset
         return index_offset(j) + (2*j+1)*(j+m) + j + mp
+    
     def make_wigner_theta(beta, WignerArray, order):
+        """
+        Populate WignerArray with values based on beta and the order.
+
+        Parameters:
+        beta (numpy.ndarray): Array of beta angles.
+        WignerArray (numpy.ndarray): Array to store the Wigner D matrices.
+        order (int): Order of the Wigner D matrices.
+        """
         beta = np.asarray(beta)
         cos_beta = np.cos(beta)
         sin_beta = np.sin(beta)
@@ -80,14 +101,29 @@ def get_small_d_wigner_for_real(beta, L_max):
     make_wigner_theta(beta, WignerArray, L_max)
     return WignerArray
 
-
+# Function to generate real Wigner D matrices with initial configuration
 def wigner_d_matrix_real0(L, alpha, beta, gamma):
-    
+    """
+    Generate initial real Wigner D matrices.
+
+    Parameters:
+    L (int): Maximum degree of the Wigner D matrices.
+    alpha (numpy.ndarray): Array of alpha angles.
+    beta (numpy.ndarray): Array of beta angles.
+    gamma (numpy.ndarray): Array of gamma angles.
+
+    Returns:
+    numpy.ndarray: Array of real Wigner D matrices.
+    """
     d_matrices = get_small_d_wigner_for_real(beta, L)
     d_real_matrices = np.zeros((len(alpha), len(beta), len(gamma), d_matrices.shape[1]))#, dtype = np.float32)
+    
+    # Reshape angles for broadcasting
     alpha = np.reshape(alpha, [-1,1,1,1])
     d_matrices = d_matrices[None,:, None, :]
     gamma = np.reshape(gamma, [1,1,-1,1])
+    
+    
     def idx(j, m, n):
         return j*(-1 + 4*j**2)//3 + (2 * j + 1) * m + n
 
@@ -102,6 +138,8 @@ def wigner_d_matrix_real0(L, alpha, beta, gamma):
     
     indices = []
     factors = []
+
+    # Calculate indices and factors for Wigner D matrices
     for l in range(L):
         for m in range(-l, l + 1):
             for n in range(-l, l + 1):
@@ -147,9 +185,19 @@ def wigner_d_matrix_real0(L, alpha, beta, gamma):
     return d_real_matrices
 
 
+# Function to generate decomposed real Wigner D matrices
 def wigner_d_matrix_real(L, alpha, beta, gamma):
     """
-    Generate real Wigner D matrices.
+    Generate real Wigner D matrices with detailed components.
+
+    Parameters:
+    L (int): Maximum degree of the Wigner D matrices.
+    alpha (numpy.ndarray): Array of alpha angles.
+    beta (numpy.ndarray): Array of beta angles.
+    gamma (numpy.ndarray): Array of gamma angles.
+
+    Returns:
+    tuple: Detailed components of the real Wigner D matrices.
     """
     d_matrices = get_small_d_wigner_for_real(beta, L)
     def cossin(arg, t):
@@ -159,6 +207,9 @@ def wigner_d_matrix_real(L, alpha, beta, gamma):
     cossin_gamma1 = []
     cossin_alpha2 = []
     cossin_gamma2 = []
+
+
+    # Calculate cosine-sine combinations
     for m in range(-L+1, L):
         cossin_alpha1.append(cossin(m*alpha, 1.0*(m < 0)))
         cossin_gamma1.append(cossin(m*gamma, 1.0*(m < 0)))
@@ -174,6 +225,7 @@ def wigner_d_matrix_real(L, alpha, beta, gamma):
     indices = []
     factors = []
 
+    # Calculate indices and factors for detailed Wigner D matrices
     for l in range(L):
         for m in range(-l, l + 1):
             for n in range(-l, l + 1):
@@ -210,6 +262,8 @@ def wigner_d_matrix_real(L, alpha, beta, gamma):
            
     indices = np.array(indices, dtype = np.int32)
     factors = np.array(factors)
+
+    # Compute detailed Wigner D matrices
     d1 = factors[:,0]*d_matrices + factors[:,1]*d_matrices[...,indices] 
     d2 = factors[:,2]*d_matrices + factors[:,3]*d_matrices[...,indices]
     return d1, d2, cossin_alpha1, cossin_gamma1, cossin_alpha2, cossin_gamma2
