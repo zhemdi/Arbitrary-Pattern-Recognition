@@ -5,7 +5,7 @@ import numpy as np
 
 from .tensor_product import tensor_product
 
-EPS = 1e-16
+EPS = 1e-12
 NORM_FACTOR = 3.0
 
 
@@ -108,6 +108,8 @@ class SO3LocalActivation(nn.Module):
                 x_min = k - n
                 x_max = k + n
 
+                
+
                 coefficients = torch.zeros_like(coefficients_ad)
                 condition_coef_ad = (x_min < 0) & (x_max > 0)
                 condition_coef_ad_expanded = condition_coef_ad.unsqueeze(-1).expand_as(coefficients_ad)
@@ -122,6 +124,8 @@ class SO3LocalActivation(nn.Module):
                 coefficients = torch.where(condition_negative_expanded, torch.tensor([0, 0.01, 0], device=input.device)[None, None, None, None, None, :].expand_as(coefficients_ad), coefficients)
                 coefficients = torch.where(condition_positive_expanded, torch.tensor([0, 1, 0], device=input.device)[None, None, None, None, None, :].expand_as(coefficients_ad), coefficients)
 
+                
+
             x = input / n.unsqueeze(2)
         else:
             x = input / norm
@@ -130,12 +134,18 @@ class SO3LocalActivation(nn.Module):
         args = (x, coefficients, self.order)
         output = TrainableActivation.apply(*args)
 
+        
+
         if self.distr_dependency:
             output = output * (norm * self.mults[None, :, None, None, None, None])
-        elif self.coefficients_type is not 'adaptive':
-            output = output * norm
-        else:
+        elif self.coefficients_type == 'adaptive':
             output = output * n.unsqueeze(2)
+
+            
+        else:
+            output = output * norm
+        
+            
 
         return output
     
