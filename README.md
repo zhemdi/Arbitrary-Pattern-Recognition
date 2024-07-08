@@ -1,4 +1,4 @@
-# ILPO Repository
+# Arbitrary Pattern Recognition
 
 This repository contains mplementations of ILPONet (Invariant to Local Patterns Orientation Network) and EquiLoPO (Equivariant to Local Patterns Orientation Network) , convolutional neural network architectures that achieve rotational invariance and equivariance for volumetric data analysis respectively. The key components of this repository are:
 
