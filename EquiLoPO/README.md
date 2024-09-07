@@ -1,5 +1,5 @@
 <div align="center">
-  ![alt text](illustration/Figure.png)
+  ![alt text](EquiLoPO/illustration/Figure.png)
 </div>
 
 # EquiLoPO: Equivariant to Local Patterns Orientation Network
