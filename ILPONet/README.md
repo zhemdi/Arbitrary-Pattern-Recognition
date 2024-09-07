@@ -1,6 +1,6 @@
-<div align="center">
-  ![alt text](ILPONet/illustration/ILPO-scheme.png)
-</div>
+<p align="center">
+  <img src="illustration/ILPO-scheme.png" alt="alt text">
+</p>
 
 # ILPO-Net: Invariant to Local Patterns Orientation Network
 

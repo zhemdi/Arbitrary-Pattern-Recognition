@@ -1,6 +1,6 @@
-<div align="center">
-  ![alt text](EquiLoPO/illustration/Figure.png)
-</div>
+<p align="center">
+  <img src="illustration/Figure.png" alt="alt text">
+</p>
 
 # EquiLoPO: Equivariant to Local Patterns Orientation Network
 
